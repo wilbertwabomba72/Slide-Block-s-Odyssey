@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Block's Odyssey</title>
+  <meta name="description" content="Slide Block's Odyssey is a fully offline sliding block puzzle game for iPhone with 50 handcrafted levels, exact optimum goals, and unlockable visual themes.">
+  <style>
+    :root {
+      --bg: #ead7a8;
+      --bg-soft: #f7edd4;
+      --card: rgba(255, 248, 231, 0.74);
+      --line: #5a3724;
+      --text: #3a2418;
+      --muted: #6f4d39;
+      --accent: #df8c5c;
+      --accent-soft: #f5d780;
+      --shadow: rgba(90, 55, 36, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.35), transparent 30%),
+        radial-gradient(circle at right 20%, rgba(223, 140, 92, 0.18), transparent 28%),
+        linear-gradient(180deg, #efe3bf 0%, #ead8ad 44%, #e4cf9f 100%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 32px 0 48px;
+    }
+
+    .hero-shell {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+      padding: 28px;
+      border: 4px solid var(--line);
+      border-radius: 32px;
+      background: linear-gradient(180deg, rgba(255, 248, 231, 0.88), rgba(247, 229, 187, 0.82));
+      box-shadow: 0 24px 60px var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.45);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 0.96;
+      font-family: "Avenir Next Condensed", "Avenir Next", "Trebuchet MS", sans-serif;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(56px, 10vw, 104px);
+      letter-spacing: -0.05em;
+    }
+
+    .hero p {
+      max-width: 640px;
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin: 20px 0 0;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 0 20px;
+      border: 3px solid var(--line);
+      border-radius: 18px;
+      background: var(--accent);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(90, 55, 36, 0.14);
+    }
+
+    .btn.secondary {
+      background: var(--bg-soft);
+    }
+
+    .phone-stack {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      min-height: 560px;
+    }
+
+    .phone {
+      width: min(100%, 292px);
+      border: 6px solid #1f1c19;
+      border-radius: 38px;
+      background: #1f1c19;
+      box-shadow: 0 26px 38px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
+    }
+
+    .phone img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .phone.offset {
+      position: absolute;
+      right: 0;
+      bottom: 8px;
+      width: min(42%, 180px);
+      transform: rotate(7deg);
+      opacity: 0.98;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0 0;
+    }
+
+    .stat {
+      padding: 18px 16px;
+      border: 3px solid rgba(90, 55, 36, 0.22);
+      border-radius: 22px;
+      background: rgba(255, 249, 236, 0.58);
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    section {
+      padding: 18px 0 22px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-size: clamp(34px, 5vw, 56px);
+      letter-spacing: -0.04em;
+    }
+
+    .kicker {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      padding: 20px;
+      border: 3px solid rgba(90, 55, 36, 0.22);
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: 0 16px 30px rgba(90, 55, 36, 0.08);
+    }
+
+    .card h3 {
+      font-size: 28px;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .card p, .card li {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .theme-chip {
+      padding: 18px 16px;
+      min-height: 164px;
+      border: 3px solid rgba(90, 55, 36, 0.22);
+      border-radius: 24px;
+      background: var(--card);
+    }
+
+    .theme-chip strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+
+    .theme-chip p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .shot {
+      position: relative;
+      overflow: hidden;
+      border: 4px solid var(--line);
+      border-radius: 30px;
+      background: #1f1c19;
+      box-shadow: 0 20px 34px rgba(90, 55, 36, 0.14);
+    }
+
+    .shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .shot span {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(31, 28, 25, 0.8);
+      color: #fff5e0;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .meta dl {
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta div {
+      display: grid;
+      gap: 2px;
+    }
+
+    .meta dt {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .meta dd {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 18px 0 34px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 980px) {
+      .hero-shell,
+      .grid,
+      .meta {
+        grid-template-columns: 1fr;
+      }
+
+      .theme-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .phone-stack {
+        min-height: auto;
+      }
+
+      .phone.offset {
+        position: static;
+        width: min(52%, 180px);
+        transform: translateY(-20px) rotate(6deg);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(100% - 20px, 1120px);
+      }
+
+      .hero-shell {
+        padding: 20px;
+        border-radius: 26px;
+      }
+
+      .cta-row {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .theme-grid,
+      .gallery,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="wrap hero-shell">
+        <div>
+          <div class="eyebrow">Offline iPhone Puzzle</div>
+          <h1>Slide Block's Odyssey</h1>
+          <p>
+            Slide Block's Odyssey is a polished single-player sliding block puzzle for iPhone. Move surrounding blocks,
+            clear the lane, and guide the red block to the exit across fifty handcrafted levels built for pure,
+            repeatable logic play.
+          </p>
+          <p>
+            Every stage has a fixed layout and a known optimum solution. Progress comes from planning better moves,
+            learning cleaner routes, and replaying for exact clears instead of relying on random generation.
+          </p>
+          <div class="cta-row">
+            <a class="btn" href="#screens">View Screens</a>
+            <a class="btn secondary" href="privacy.html">Privacy Policy</a>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <strong>50</strong>
+              <span>Handcrafted offline levels</span>
+            </div>
+            <div class="stat">
+              <strong>5</strong>
+              <span>Visual themes including four unlockables</span>
+            </div>
+            <div class="stat">
+              <strong>1-3</strong>
+              <span>Star rating per stage based on move efficiency</span>
+            </div>
+            <div class="stat">
+              <strong>iOS 13+</strong>
+              <span>Portrait support across iPhone models</span>
+            </div>
+          </div>
+        </div>
+        <div class="phone-stack">
+          <div class="phone">
+            <img src="IMG_0043.PNG" alt="Slide Block's Odyssey gameplay screenshot">
+          </div>
+          <div class="phone offset">
+            <img src="IMG_0053.PNG" alt="Slide Block's Odyssey themes screenshot">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Why It Plays Well</h2>
+          </div>
+          <p class="kicker">
+            Slide Block's Odyssey is built in SpriteKit with Objective-C and tuned for fast portrait play,
+            readable interfaces, smooth block movement, and fully local progress.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Classic Rules</h3>
+            <p>
+              Horizontal blocks move left and right, vertical blocks move up and down,
+              and the target block must reach the right-side exit. The rules stay clear,
+              immediate, and easy to understand from the first level.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Exact Optimum Goals</h3>
+            <p>
+              Each level includes a known optimum move count. Three-star clears require an
+              exact match, making every replay meaningful for players who enjoy precision.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Pure Offline Progress</h3>
+            <p>
+              The game is designed for normal play without internet access, accounts,
+              cloud sync, or live services. Your level progress, best moves, theme unlocks,
+              and audio settings are stored locally on the device.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>What You Get</h2>
+          </div>
+          <p class="kicker">
+            The structure is intentionally focused: fixed content, readable difficulty progression,
+            and clean replay loops instead of endless procedural filler.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Core Package</h3>
+            <ul>
+              <li>Fifty handcrafted single-player levels split across five pages.</li>
+              <li>Board sizes that vary across the campaign for broader puzzle rhythm.</li>
+              <li>Fast restart and direct replay support for move optimization.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Progress Systems</h3>
+            <ul>
+              <li>Best move tracking per level.</li>
+              <li>Three-star clear ratings and cumulative progress feedback.</li>
+              <li>Theme unlock milestones tied to perfect clears on Levels 10, 20, 30, and 40.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Player Experience</h3>
+            <ul>
+              <li>Portrait interface tuned for iPhone.</li>
+              <li>Simple tap-and-drag controls with immediate feedback.</li>
+              <li>Quick sessions for short breaks or longer mastery runs.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Unlockable Themes</h2>
+          </div>
+          <p class="kicker">
+            Themes change the visual presentation while preserving the same fixed puzzle layouts and rules.
+          </p>
+        </div>
+        <div class="theme-grid">
+          <article class="theme-chip">
+            <strong>Classic</strong>
+            <p>Default wood-style presentation with warm colors and clean board contrast.</p>
+          </article>
+          <article class="theme-chip">
+            <strong>Traffic Jam</strong>
+            <p>Unlocked by clearing Level 10 with the exact optimum move count.</p>
+          </article>
+          <article class="theme-chip">
+            <strong>Big Fish</strong>
+            <p>Unlocked by clearing Level 20 with the exact optimum move count.</p>
+          </article>
+          <article class="theme-chip">
+            <strong>Space Cargo</strong>
+            <p>Unlocked by clearing Level 30 with the exact optimum move count.</p>
+          </article>
+          <article class="theme-chip">
+            <strong>Fire Rescue</strong>
+            <p>Unlocked by clearing Level 40 with the exact optimum move count.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="screens">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Screen Gallery</h2>
+          </div>
+          <p class="kicker">
+            Current production captures from the iPhone build used for App Store marketing materials.
+          </p>
+        </div>
+        <div class="gallery">
+          <figure class="shot">
+            <img src="IMG_0042.PNG" alt="Main menu screenshot">
+            <span>Main Menu</span>
+          </figure>
+          <figure class="shot">
+            <img src="IMG_0043.PNG" alt="Gameplay screenshot">
+            <span>Gameplay</span>
+          </figure>
+          <figure class="shot">
+            <img src="IMG_0048.PNG" alt="Pause menu screenshot">
+            <span>Pause Menu</span>
+          </figure>
+          <figure class="shot">
+            <img src="IMG_0053.PNG" alt="Themes screenshot">
+            <span>Themes</span>
+          </figure>
+          <figure class="shot">
+            <img src="IMG_0052.PNG" alt="Level select screenshot">
+            <span>Level Select</span>
+          </figure>
+          <figure class="shot">
+            <img src="IMG_0054.PNG" alt="Settings screenshot">
+            <span>Settings</span>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Technical Summary</h2>
+          </div>
+          <p class="kicker">
+            Submission-facing project details for reviewers, partners, and storefront support pages.
+          </p>
+        </div>
+        <div class="meta">
+          <article class="card">
+            <h3>Compatibility</h3>
+            <dl>
+              <div>
+                <dt>Framework</dt>
+                <dd>SpriteKit + Objective-C</dd>
+              </div>
+              <div>
+                <dt>Xcode</dt>
+                <dd>26.3</dd>
+              </div>
+              <div>
+                <dt>Minimum OS</dt>
+                <dd>iOS 13.0</dd>
+              </div>
+              <div>
+                <dt>Devices</dt>
+                <dd>All supported iPhone models on iOS 13 and later</dd>
+              </div>
+            </dl>
+          </article>
+          <article class="card">
+            <h3>Product Positioning</h3>
+            <dl>
+              <div>
+                <dt>Genre</dt>
+                <dd>Offline sliding block puzzle</dd>
+              </div>
+              <div>
+                <dt>Modes</dt>
+                <dd>Single-player</dd>
+              </div>
+              <div>
+                <dt>Orientation</dt>
+                <dd>Portrait</dd>
+              </div>
+              <div>
+                <dt>Privacy</dt>
+                <dd>No account system, no analytics SDK, no ad SDK, local save data only</dd>
+              </div>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Slide Block's Odyssey is an iPhone puzzle game focused on fixed challenge design, exact-move mastery,
+      and clean offline play. For privacy details, see <a href="privacy.html">privacy.html</a>.
+      Developer contact: <a href="mailto:hengbozail@163.com">hengbozail@163.com</a>.
+    </div>
+  </footer>
+</body>
+</html>
